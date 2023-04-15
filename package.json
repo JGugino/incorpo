@@ -1,0 +1,22 @@
+{
+  "name": "incorpo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "incorpo": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && incorpo"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "toml": "^3.0.0",
+    "typescript": "^5.0.4"
+  }
+}
