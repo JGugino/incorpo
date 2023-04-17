@@ -12,7 +12,10 @@ const VERSION = '0.0.2';
 
 const argAction = processArgs(yargs(process.argv.slice(2)).argv);
 
-outputHeader(VERSION);
+if(argAction.action !== ArgAction.PROJECT_HELP){
+    //TODO: Add minified version of header ie. remove author and version
+    outputHeader(VERSION);
+}
 
 switch(argAction.action){
     case ArgAction.INIT_PROJECT:
@@ -26,6 +29,10 @@ switch(argAction.action){
         break;
     case ArgAction.INVAILD_PATH:
         console.error(colorString('Invaild creation path. Type "incorpo -h" for help.', 'red'));
+        break;
+    case ArgAction.PROJECT_HELP:
+        //TODO: Add help screen :)
+        console.error(colorString('This will be a help screen :)', 'red'));
         break;
     default:
         console.error(colorString('Invaild arguments. Type "incorpo -h" for help.', 'red'));

@@ -5,6 +5,10 @@ export function processArgs(argv: any): {status: Status, action: ArgAction, data
 
     let commands = argv._;
 
+    if(argv.h === true && commands.length <= 0){
+        return { status: Status.OKAY, action: ArgAction.PROJECT_HELP };
+    }
+
     if(argv.init === true && commands.length <= 0){
         return { status: Status.OKAY, action: ArgAction.INIT_PROJECT };
     }
