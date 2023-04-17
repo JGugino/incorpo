@@ -17,10 +17,12 @@
   "license": "GNU v3",
   "dependencies": {
     "chalk": "^5.2.0",
+    "prompt-sync": "^4.2.0",
     "toml": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
+    "@types/prompt-sync": "^4.2.0",
     "@types/yargs": "^17.0.24",
     "typescript": "^5.0.4",
     "yargs": "^17.7.1"
