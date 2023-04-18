@@ -4,17 +4,21 @@ import yargs from 'yargs';
 import { ArgAction } from './enums/ArgAction.js';
 
 import { processArgs } from "./helpers/arg_processor.js";
-import { outputHeader, colorString } from './helpers/output_helper.js';
+import { outputHeaderFull, outputHeaderMin, colorString } from './helpers/output_helper.js';
 
 import { createProject } from './helpers/project_creator.js';
 
+import { injectHTML } from './helpers/html_injector.js';
+
+const PROJECT_NAME = "Incorpo"
 const VERSION = '0.0.2';
 
 const argAction = processArgs(yargs(process.argv.slice(2)).argv);
 
 if(argAction.action !== ArgAction.PROJECT_HELP){
-    //TODO: Add minified version of header ie. remove author and version
-    outputHeader(VERSION);
+    outputHeaderFull(PROJECT_NAME, VERSION);
+}else{
+    outputHeaderMin(PROJECT_NAME);
 }
 
 switch(argAction.action){
@@ -26,6 +30,7 @@ switch(argAction.action){
         break;
     case ArgAction.COMPILE_NO_PATH:
         console.log(colorString('Compiling project...', 'bright_green'));
+        injectHTML();
         break;
     case ArgAction.INVAILD_PATH:
         console.error(colorString('Invaild creation path. Type "incorpo -h" for help.', 'red'));

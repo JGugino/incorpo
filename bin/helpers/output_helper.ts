@@ -1,20 +1,28 @@
 import chalk from "chalk";
 
-export function outputHeader(version: string){
-    const headerText = 'Incorpo';
-    const versionText = `Version: ${version}`;
-    const createdText = "Author: Gugino \n";
-    const headerArea = 36;
+export function outputHeaderFull(name:string, version: string){
+    const headerText = name;
+    const versionText = `Version: ${version} \n`;
+    const headerArea = 40;
 
     const headerSpacing = createSpacing(headerText, headerArea);
     const versionSpacing = createSpacing(versionText, headerArea);
-    const createdSpacing = createSpacing(createdText, headerArea);
 
-    console.log(chalk.redBright(createHorizontalBar('-', headerArea)));
+    console.log(chalk.red(createHorizontalBar('-', headerArea)));
     console.log(headerSpacing + stylizeString(colorString(headerText, 'bright_blue'), 'underline') + headerSpacing);
     console.log(versionSpacing + stylizeString(colorString(versionText, 'bright_white'), 'bold') + versionSpacing);
-    console.log(createdSpacing + stylizeString(colorString(createdText, 'bright_green'), 'bold') + createdSpacing);
-    console.log(chalk.redBright(createHorizontalBar('-', headerArea)));
+    console.log(chalk.red(createHorizontalBar('-', headerArea)));
+}
+
+export function outputHeaderMin(name: string){
+    const headerText = name;
+    const headerArea = 40;
+
+    const headerSpacing = createSpacing(headerText, headerArea);
+
+    console.log(chalk.red(createHorizontalBar('-', headerArea)));
+    console.log(headerSpacing + stylizeString(colorString(headerText, 'bright_blue'), 'underline') + "\n" + headerSpacing);
+    console.log(chalk.red(createHorizontalBar('-', headerArea)));
 }
 
 function createHorizontalBar(character: string, length: number){

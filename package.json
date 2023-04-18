@@ -10,13 +10,15 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "tsc && incorpo"
+    "compile": "tsc && incorpo",
+    "init": "tsc && incorpo --init"
   },
   "keywords": [],
   "author": "Gugino",
-  "license": "GNU v3",
+  "license": "GPL-3.0",
   "dependencies": {
     "chalk": "^5.2.0",
+    "node-html-parser": "^6.1.5",
     "prompt-sync": "^4.2.0",
     "toml": "^3.0.0"
   },

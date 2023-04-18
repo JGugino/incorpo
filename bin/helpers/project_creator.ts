@@ -30,21 +30,19 @@ export async function createProject(){
     .then(async result => {
 
         //Create src directories
+        console.log(colorString(`Creating "src" directories... \n`, 'bright_green'));
+
         await createDirectory('src', rootPath);
-        await createDirectory(join('src', 'scripts'), rootPath);
-        await createDirectory(join('src', 'styles'), rootPath);
         await createDirectory(join('src', 'pages'), rootPath);
         await createDirectory(join('src', 'components'), rootPath);
+        await createDirectory(join('src', 'assets'), rootPath);
+        await createDirectory(join('src', 'assets', 'scripts'), rootPath);
+        await createDirectory(join('src', 'assets', 'styles'), rootPath);
 
-        //Create dist directories
-        await createDirectory('dist', rootPath);
-        await createDirectory(join('dist', 'assets'), rootPath);
-        await createDirectory(join('dist', 'assets', 'scripts'), rootPath);
-        await createDirectory(join('dist', 'assets', 'styles'), rootPath);
-        await createDirectory(join('dist', 'pages'), rootPath);
-        await createDirectory(join('dist', 'components'), rootPath);
 
         //Create config file
+        console.log(colorString(`Creating configuration... \n`, 'bright_green'));
+
         createFile('incorpo.config.toml', rootPath, defaultConfig);
 
         createFile('index.html', join(rootPath, 'src'), defaultIndex)
@@ -57,3 +55,11 @@ export async function createProject(){
         console.log(colorString('Unable to create project directories, please try again', 'red'));
     });
 }
+
+    //Create dist directories
+    // await createDirectory('dist', rootPath);
+    // await createDirectory(join('dist', 'assets'), rootPath);
+    // await createDirectory(join('dist', 'assets', 'scripts'), rootPath);
+    // await createDirectory(join('dist', 'assets', 'styles'), rootPath);
+    // await createDirectory(join('dist', 'pages'), rootPath);
+    // await createDirectory(join('dist', 'components'), rootPath);
