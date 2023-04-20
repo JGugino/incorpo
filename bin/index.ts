@@ -11,7 +11,7 @@ import { createProject } from './helpers/project_creator.js';
 import { injectHTML } from './helpers/html_injector.js';
 
 const PROJECT_NAME = "Incorpo"
-const VERSION = '0.0.2';
+const VERSION = '0.0.4';
 
 const argAction = processArgs(yargs(process.argv.slice(2)).argv);
 
@@ -29,7 +29,7 @@ switch(argAction.action){
         console.log(colorString('Compiling project at path : ' + argAction?.data.path + '....', 'bright_green'));
         break;
     case ArgAction.COMPILE_NO_PATH:
-        console.log(colorString('Compiling project...', 'bright_green'));
+        console.log(colorString('Starting HTML injection...\n', 'bright_green'));
         injectHTML();
         break;
     case ArgAction.INVAILD_PATH:

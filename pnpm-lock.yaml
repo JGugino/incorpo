@@ -4,6 +4,9 @@ dependencies:
   chalk:
     specifier: ^5.2.0
     version: 5.2.0
+  cli-select:
+    specifier: ^1.1.2
+    version: 1.1.2
   node-html-parser:
     specifier: ^6.1.5
     version: 6.1.5
@@ -51,6 +54,11 @@ packages:
       '@types/yargs-parser': 21.0.0
     dev: true
 
+  /ansi-escapes@3.2.0:
+    resolution: {integrity: sha512-cBhpre4ma+U0T1oM5fXg7Dy1Jw7zzwv7lt/GoCpr+hDQJoYnKVPLL4dCvSEFMmQurOQvSrwT7SL/DAlhBI97RQ==}
+    engines: {node: '>=4'}
+    dev: false
+
   /ansi-regex@4.1.1:
     resolution: {integrity: sha512-ILlv4k/3f6vfQ4OoP2AGvirOktlQ98ZEL1k9FaQjxa3L1abBgbuTDAdPOpvbGncC0BTVQrl+OM8xZGK6tWXt7g==}
     engines: {node: '>=6'}
@@ -75,6 +83,12 @@ packages:
   /chalk@5.2.0:
     resolution: {integrity: sha512-ree3Gqw/nazQAPuJJEy+avdl7QfZMcUvmHIKgEZkGL+xOBzRvup5Hxo6LHuMceSxOabuJLJm5Yp/92R9eMmMvA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+    dev: false
+
+  /cli-select@1.1.2:
+    resolution: {integrity: sha512-PSvWb8G0PPmBNDcz/uM2LkZN3Nn5JmhUl465tTfynQAXjKzFpmHbxStM6X/+awKp5DJuAaHMzzMPefT0suGm1w==}
+    dependencies:
+      ansi-escapes: 3.2.0
     dev: false
 
   /cliui@8.0.1:
