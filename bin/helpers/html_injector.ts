@@ -110,18 +110,65 @@ async function getPagesContents(path: string){
     return contents;
 }
 
+//TODO: Finish adding props
+
+function loadComponentProps(component: Element): any[]{
+    const loadedProps:any[] = [];
+
+    const propsElement = component.getElementsByTagName('props')[0];
+
+    console.log("Props:", propsElement);
+
+    const componentProps = propsElement.getElementsByTagName('prop');
+    
+    console.log("Prop:", componentProps);
+
+    for (let p = 0; p < componentProps.length; p++) {
+        const prop = componentProps[p];
+        loadedProps.push({id: prop.getAttribute('id'), value: prop.getAttribute('value')});
+    }
+
+    return loadedProps
+}
+
+function findComponentPropByID(props: any[], id?: string | null){
+    for( const prop of props ) {
+        if(prop.id == id){
+            return prop;
+        }
+    }
+
+    return 'no-prop-found';
+}
+
 function injectComponents(foundComponents: any[], loadedComponents: any[]){
     foundComponents.forEach(comp =>{
         const compID = comp.getAttribute('id');
 
         const foundComp = findComponentByID(loadedComponents, compID);
 
+        const loadedProps = loadComponentProps(foundComp);
+
         const componentHTML = foundComp.element.getElementsByTagName('markup')[0];
+
+        injectComponentProps(componentHTML, loadedProps);
 
         comp.insertAdjacentHTML('afterend', componentHTML.innerHTML);
 
         comp.remove();
     });
+}
+
+function injectComponentProps(componentHTML: HTMLElement, loadedProps: any[]){
+    const componentProps = componentHTML.getElementsByTagName('prop');
+
+    for (let p = 0; p < componentProps.length; p++) {
+        const prop = componentProps[p];
+        const foundProp = findComponentPropByID(loadedProps, prop.getAttribute('id'));
+        if(foundProp){
+            prop.insertAdjacentHTML('afterend', foundProp.value);
+        }
+    }
 }
 
 async function setupDistDirectory(path: string){
