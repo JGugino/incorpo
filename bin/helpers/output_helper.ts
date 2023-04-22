@@ -2,7 +2,7 @@ import chalk from "chalk";
 
 export function outputHeaderFull(name:string, version: string){
     const headerText = name;
-    const versionText = `Version: ${version} \n`;
+    const versionText = `v${version} \n`;
     const headerArea = 40;
 
     const headerSpacing = createSpacing(headerText, headerArea);

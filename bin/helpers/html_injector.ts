@@ -15,6 +15,9 @@ export async function injectHTML(path?: string){
     console.log(colorString('Loading components...\n', 'bright_green'));
     const loadedComponents = formatComponents(await loadComponents(componentsDirectory));
 
+    console.log(colorString('Loading component props...\n', 'bright_green'));
+    const loadedProps = loadComponentProps(loadedComponents);
+
     await setupDistDirectory('.');
 
     if(!path){
@@ -26,7 +29,9 @@ export async function injectHTML(path?: string){
         
         const components = parsedIndex.getElementsByTagName('inco-comp');
         
-        injectComponents(components, loadedComponents);
+        const updatedProps = findUpdatedProps(components, loadedProps);
+
+        injectComponents(components, loadedComponents, loadedProps, updatedProps);
 
         await createFile('index.html', join('.', 'dist'), parsedIndex.innerHTML);
 
@@ -38,7 +43,9 @@ export async function injectHTML(path?: string){
             const el = parse(pageContent.content);
             const components = el.getElementsByTagName('inco-comp');
 
-            injectComponents(components, loadedComponents);
+            const updatedProps = findUpdatedProps(components, loadedProps);
+
+            injectComponents(components, loadedComponents, loadedProps, updatedProps);
 
             await createFile(pageContent.name, join('.', 'dist', 'pages'), el.innerHTML);
         });
@@ -48,9 +55,6 @@ export async function injectHTML(path?: string){
 
         return;
     }
-
-    
-
 }
 
 function findComponentByID(components: any[], id?: string){
@@ -110,23 +114,24 @@ async function getPagesContents(path: string){
     return contents;
 }
 
-//TODO: Finish adding props
-
-function loadComponentProps(component: Element): any[]{
+//Load the defined props from the incorpo component file
+function loadComponentProps(components: any[]): any[]{
     const loadedProps:any[] = [];
 
-    const propsElement = component.getElementsByTagName('props')[0];
+    components.forEach((comp) => {
+        const propsElement =comp.element.getElementsByTagName('props');
 
-    console.log("Props:", propsElement);
-
-    const componentProps = propsElement.getElementsByTagName('prop');
+        if(!propsElement || propsElement.length <= 0){
+            return [];
+        }
     
-    console.log("Prop:", componentProps);
-
-    for (let p = 0; p < componentProps.length; p++) {
-        const prop = componentProps[p];
-        loadedProps.push({id: prop.getAttribute('id'), value: prop.getAttribute('value')});
-    }
+        const componentProps = propsElement[0].getElementsByTagName('prop');
+    
+        for (let p = 0; p < componentProps.length; p++) {
+            const prop = componentProps[p];
+            loadedProps.push({id: prop.getAttribute('id'), value: prop.getAttribute('value')});
+        }
+    });
 
     return loadedProps
 }
@@ -141,17 +146,16 @@ function findComponentPropByID(props: any[], id?: string | null){
     return 'no-prop-found';
 }
 
-function injectComponents(foundComponents: any[], loadedComponents: any[]){
+//Inject the current component into the page
+function injectComponents(foundComponents: any[], loadedComponents: any[], loadedProps: any[], updatedProps: any[]){
     foundComponents.forEach(comp =>{
         const compID = comp.getAttribute('id');
 
         const foundComp = findComponentByID(loadedComponents, compID);
 
-        const loadedProps = loadComponentProps(foundComp);
-
         const componentHTML = foundComp.element.getElementsByTagName('markup')[0];
 
-        injectComponentProps(componentHTML, loadedProps);
+        injectComponentProps(componentHTML, loadedProps, updatedProps);
 
         comp.insertAdjacentHTML('afterend', componentHTML.innerHTML);
 
@@ -159,18 +163,61 @@ function injectComponents(foundComponents: any[], loadedComponents: any[]){
     });
 }
 
-function injectComponentProps(componentHTML: HTMLElement, loadedProps: any[]){
-    const componentProps = componentHTML.getElementsByTagName('prop');
+//Inject the defined props into the current component
+function injectComponentProps(componentHTML: HTMLElement, loadedProps: any[], updatedProps: any[]){
+    const componentProps = componentHTML.querySelectorAll('prop');
 
     for (let p = 0; p < componentProps.length; p++) {
         const prop = componentProps[p];
         const foundProp = findComponentPropByID(loadedProps, prop.getAttribute('id'));
-        if(foundProp){
-            prop.insertAdjacentHTML('afterend', foundProp.value);
-        }
+        const foundUpdatedProps = findUpdatedPropByID(updatedProps, prop.getAttribute('id'));
+
+        console.log(foundUpdatedProps);
+
+        const propValue = foundUpdatedProps == 'no-updated-prop' ? foundProp.value : foundUpdatedProps;
+
+        console.log(propValue);
+
+        prop.insertAdjacentHTML('afterend', propValue);
+        
+        prop.remove();
     }
 }
 
+//TODO: Fix one updated prop updating all props on components of the same id
+
+function findUpdatedProps(components: any[], foundProps: any[]): any[]{
+    const updatedProps: any[] = [];
+
+    components.forEach(comp => {
+        const props: any[] = []
+        foundProps.forEach(prop =>{
+            if(comp.getAttribute(prop.id)){
+                props.push({id: prop.id, value: comp.getAttribute(prop.id)});
+            }
+        })
+
+        updatedProps.push(props);
+    });
+
+    return updatedProps;
+}
+
+function findUpdatedPropByID(updatedProps: any[], id?: string | null){
+    let foundProp = null;
+    
+    updatedProps.forEach(props => {
+        props.forEach((prop: any) => {
+            if(prop.id == id){
+                foundProp = prop.value;
+            }
+        });
+    });
+
+    return foundProp? foundProp : 'no-updated-prop';
+}
+
+//Create the folders required for the "dist" directory
 async function setupDistDirectory(path: string){
     await createDirectory('dist', path);
     await createDirectory(join('dist', 'assets'), path);
