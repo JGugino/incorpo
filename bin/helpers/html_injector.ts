@@ -119,7 +119,7 @@ function loadComponentProps(components: any[]): any[]{
     const loadedProps:any[] = [];
 
     components.forEach((comp) => {
-        const propsElement =comp.element.getElementsByTagName('props');
+        const propsElement = comp.element.getElementsByTagName('props');
 
         if(!propsElement || propsElement.length <= 0){
             return [];
@@ -133,7 +133,7 @@ function loadComponentProps(components: any[]): any[]{
         }
     });
 
-    return loadedProps
+    return loadedProps;
 }
 
 function findComponentPropByID(props: any[], id?: string | null){
@@ -167,16 +167,18 @@ function injectComponents(foundComponents: any[], loadedComponents: any[], loade
 function injectComponentProps(componentHTML: HTMLElement, loadedProps: any[], updatedProps: any[]){
     const componentProps = componentHTML.querySelectorAll('prop');
 
+    console.log("Updated Props: ", updatedProps);
+
     for (let p = 0; p < componentProps.length; p++) {
         const prop = componentProps[p];
         const foundProp = findComponentPropByID(loadedProps, prop.getAttribute('id'));
         const foundUpdatedProps = findUpdatedPropByID(updatedProps, prop.getAttribute('id'));
 
-        console.log(foundUpdatedProps);
+        // console.log(foundUpdatedProps);
 
-        const propValue = foundUpdatedProps == 'no-updated-prop' ? foundProp.value : foundUpdatedProps;
+        const propValue = foundUpdatedProps === 'no-updated-prop' ? foundProp.value : foundUpdatedProps;
 
-        console.log(propValue);
+        // console.log(propValue);
 
         prop.insertAdjacentHTML('afterend', propValue);
         
@@ -205,7 +207,17 @@ function findUpdatedProps(components: any[], foundProps: any[]): any[]{
 
 function findUpdatedPropByID(updatedProps: any[], id?: string | null){
     let foundProp = null;
-    
+
+    console.log("Prop By ID: ", updatedProps);
+
+    for(let u = 0; u < updatedProps.length; u++){
+        for(let p = 0; p < updatedProps[u].length; p++){
+            const prop = updatedProps[u][p];
+
+            console.log("Prop: ", prop);
+        }
+    }
+
     updatedProps.forEach(props => {
         props.forEach((prop: any) => {
             if(prop.id == id){

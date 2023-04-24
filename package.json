@@ -19,6 +19,7 @@
   "dependencies": {
     "chalk": "^5.2.0",
     "cli-select": "^1.1.2",
+    "incorpo": "^0.0.4",
     "node-html-parser": "^6.1.5",
     "prompt-sync": "^4.2.0",
     "toml": "^3.0.0"
