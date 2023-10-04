@@ -1,0 +1,18 @@
+//Component header which defines the component's name
+{incorpo name="example"}
+
+{#script}
+
+{!script}
+
+{#markup}
+
+    <div>
+        <h1>This is an example</h1>
+    </div>
+
+{!markup}
+
+{#style}
+
+{!style}
