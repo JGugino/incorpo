@@ -2,17 +2,12 @@ package creation
 
 import (
 	"fmt"
-	"io/fs"
 	"os"
 )
 
 func InitIncorpoDirectories(projectName string, path string, subfolder bool) (bool, error) {
 	
 	hasPath := len(path) > 0
-
-	if hasPath {
-		fmt.Printf("Path Detected: %s...\n", path)
-	}
 
 	if !subfolder {
 		fmt.Println("Creating without subfolder...")
@@ -23,9 +18,9 @@ func InitIncorpoDirectories(projectName string, path string, subfolder bool) (bo
 
 		//Create root project directory
 		if hasPath{
-			rootErr = os.Mkdir(path + string(os.PathSeparator) + projectName, fs.ModeDir)
+			rootErr = os.Mkdir(path + string(os.PathSeparator) + projectName, 0777)
 		}else{
-			rootErr = os.Mkdir(projectName, fs.ModeDir)
+			rootErr = os.Mkdir(projectName, 0777)
 		}
 
 
@@ -37,7 +32,7 @@ func InitIncorpoDirectories(projectName string, path string, subfolder bool) (bo
 
 	//Create src directory
 
-	srcErr := createProjectDirectory(hasPath, path, subfolder, projectName, "src")
+	srcErr := createProjectDirectory(path, subfolder, projectName, "", "src")
 
 	if srcErr != nil {
 		fmt.Println("Project already exists in specified path")
@@ -45,7 +40,7 @@ func InitIncorpoDirectories(projectName string, path string, subfolder bool) (bo
 	}
 
 	//Create src directory
-	assetsErr := createProjectDirectory(hasPath, path, subfolder, projectName, "assets")
+	assetsErr := createProjectDirectory(path, subfolder, projectName, "", "assets")
 
 	if assetsErr != nil {
 		fmt.Println("Project already exists in specified path")
@@ -53,7 +48,7 @@ func InitIncorpoDirectories(projectName string, path string, subfolder bool) (bo
 	}
 
 	//Create scripts folder inside src directory
-	scriptErr := createProjectDirectory(hasPath, path, subfolder, projectName, "src"+string(os.PathSeparator)+"scripts")
+	scriptErr := createProjectDirectory(path, subfolder, projectName, "src", "scripts")
 
 	if scriptErr != nil {
 		fmt.Println("Project already exists in specified path")
@@ -61,7 +56,7 @@ func InitIncorpoDirectories(projectName string, path string, subfolder bool) (bo
 	}
 
 	//Create styles folder inside src directory
-	styleErr := createProjectDirectory(hasPath, path, subfolder, projectName, "src"+string(os.PathSeparator)+"styles")
+	styleErr := createProjectDirectory(path, subfolder, projectName, "src", "styles")
 
 	if styleErr != nil {
 		fmt.Println("Project already exists in specified path")
@@ -69,7 +64,7 @@ func InitIncorpoDirectories(projectName string, path string, subfolder bool) (bo
 	}
 
 	//Create pages folder inside src directory
-	pageErr := createProjectDirectory(hasPath, path, subfolder, projectName, "src"+string(os.PathSeparator)+"pages")
+	pageErr := createProjectDirectory(path, subfolder, projectName, "src", "pages")
 
 	if pageErr != nil {
 		fmt.Println("Project already exists in specified path")
@@ -77,7 +72,7 @@ func InitIncorpoDirectories(projectName string, path string, subfolder bool) (bo
 	}
 
 	//Create components folder inside src directory
-	compErr := createProjectDirectory(hasPath, path, subfolder, projectName, "src"+string(os.PathSeparator)+"components")
+	compErr := createProjectDirectory(path, subfolder, projectName, "src", "components")
 
 	if compErr != nil {
 		fmt.Println("Project already exists in specified path")
@@ -87,26 +82,30 @@ func InitIncorpoDirectories(projectName string, path string, subfolder bool) (bo
 	return true, nil
 }
 
-func createProjectDirectory(hasPath bool, path string, subfolder bool, projectName string, newDirPath string) error{
-	var err error
+func createProjectDirectory(currentPath string, subfolder bool, projectName string, subPath string, folderName string) error{
+	hasSubPath := len(subPath) > 0
 
-	if hasPath {
-		err = os.Mkdir(path + "/" +InculdeProjectName(subfolder, newDirPath, projectName), fs.ModeDir)
-	}else {
-		err = os.Mkdir(InculdeProjectName(subfolder, newDirPath, projectName), fs.ModeDir)
+	var finalPath string
+
+	if !subfolder {
+		if hasSubPath{
+			finalPath = currentPath + subPath + string(os.PathSeparator) + folderName
+		}else{
+			finalPath = currentPath + folderName
+		}
+	}else{
+		if hasSubPath{
+			finalPath = currentPath + projectName + string(os.PathSeparator) + subPath + string(os.PathSeparator) + folderName
+		}else{
+			finalPath = currentPath + projectName + string(os.PathSeparator) + folderName
+		}
 	}
+
+	err := os.Mkdir(finalPath , 0777)
 
 	if err != nil {
 		return err
 	}
 
 	return nil
-}
-
-func InculdeProjectName(include bool, path string, projectName string) (string) {
-	if include {
-		return projectName + string(os.PathSeparator) + path
-	}
-
-	return path
 }

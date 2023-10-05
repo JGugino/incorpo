@@ -5,6 +5,7 @@ package creation
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -22,7 +23,14 @@ var CreateCmd = &cobra.Command{
 		subfolder, _ := cmd.Flags().GetBool("subfolder")
 
 		fmt.Println("Creating project directories...")
-		dirCompleted, _ := InitIncorpoDirectories(args[0], path, subfolder)
+		var dirCompleted bool
+		var _ error
+
+		if len(path) > 0 {
+			dirCompleted, _ = InitIncorpoDirectories(args[0], path + string(os.PathSeparator), subfolder)
+		}else{
+			dirCompleted, _ = InitIncorpoDirectories(args[0], "", subfolder)
+		}
 
 		fmt.Println("Creating project init files...")
 		filesCompleted, _ := InitIncorpoFiles(args[0], path, subfolder)

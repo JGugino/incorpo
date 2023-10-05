@@ -11,13 +11,25 @@ func InitIncorpoFiles(projectName string, path string, subfolder bool) (bool, er
 
 	configTemplate := templates.CreateConfigTemplate(projectName, "0.0.1")
 
-	configErr := createProjectFile(hasPath, path, subfolder, projectName, "", ".", "/incorpo.config.toml", configTemplate)
+	var configErr error
+
+	if hasPath{
+		configErr = createProjectFile(path + string(os.PathSeparator), subfolder, projectName, "", "incorpo.config.toml", configTemplate)
+	}else{
+		configErr = createProjectFile("", subfolder, projectName, "", "incorpo.config.toml", configTemplate)
+	}
 
 	if configErr != nil{
 		return false, configErr
 	}
 
-	indexErr := createProjectFile(hasPath, path, subfolder, projectName, "src", "", "/index.html", templates.IndexTemplate)
+	var indexErr error
+
+	if hasPath{
+		indexErr = createProjectFile(path + string(os.PathSeparator), subfolder, projectName, "src", "index.html", templates.IndexTemplate)
+	}else{
+		indexErr = createProjectFile("", subfolder, projectName, "src", "index.html", templates.IndexTemplate)
+	}
 
 	if indexErr != nil{
 		return false, indexErr
@@ -26,26 +38,31 @@ func InitIncorpoFiles(projectName string, path string, subfolder bool) (bool, er
 	return true, nil
 }
 
-func createProjectFile(hasPath bool, path string, subfolder bool, projectName string, primaryRoute string, subRoute string, fileName string, fileContents string) (error){
 
-	if len(subRoute) <= 0 {
-		subRoute = primaryRoute
-	}
 
-	var createPath string
+func createProjectFile(currentPath string, subfolder bool, projectName string, subPath string, fileName string, fileContents string) (error){
 
-	if hasPath{
-		createPath = path + string(os.PathSeparator) + InculdeProjectName(subfolder, primaryRoute, projectName)
+	var createErr error
+
+	hasSubPath := len(subPath) > 0
+
+	if !subfolder {
+		if hasSubPath{
+			createErr = CreateNewFile(currentPath + subPath + string(os.PathSeparator), fileName, fileContents)
+		}else{
+			createErr = CreateNewFile(currentPath, fileName, fileContents)
+		}
 	}else{
-		createPath = InculdeProjectName(subfolder, subRoute + string(os.PathSeparator), projectName) + string(os.PathSeparator)
+		if hasSubPath{
+			createErr = CreateNewFile(currentPath + projectName + string(os.PathSeparator)+ subPath+ string(os.PathSeparator), fileName, fileContents)
+		}else{
+			createErr = CreateNewFile(currentPath + projectName + string(os.PathSeparator), fileName, fileContents)
+		}
 	}
 
-	err := CreateNewFile(createPath, fileName, fileContents)
-
-	if err != nil{
-		return err
+	if createErr != nil{
+		return createErr
 	}
-
 
 	return nil
 }
