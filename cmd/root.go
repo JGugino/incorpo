@@ -6,6 +6,7 @@ package cmd
 import (
 	"incorpo/cmd/creation"
 	"incorpo/cmd/dist"
+	"incorpo/cmd/validation"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -30,6 +31,7 @@ func Execute() {
 func addSubCommands(){
 	rootCmd.AddCommand(creation.CreateCmd)
 	rootCmd.AddCommand(dist.BuildCmd)
+	rootCmd.AddCommand(validation.CheckCmd)
 }
 
 func init() {

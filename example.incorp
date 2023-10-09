@@ -1,5 +1,5 @@
 //Component header which defines the component's name
-{incorpo name="example"}
+{#incorpo name="example"!}
 
 {#script}
 
